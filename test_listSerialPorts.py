@@ -11,5 +11,6 @@ import lora_util
 device = lora_util.LoRa()
 print("List All Serial Ports")
 ser = device.serial_allPorts()
+print(ser)
 print("List All Serial Ports")
-newser = device.new_serial_allPorts()
+device.new_serial_allPorts()
