@@ -44,7 +44,6 @@ class LoRa:
         else:
             raise EnvironmentError('Unsupported platform')
         result = []
-        ports = ['dev/tty.Bluetooth-Incoming-Port']
         for port in ports:
             try:
                 if port == 'dev/tty.Bluetooth-Incoming-Port':
