@@ -30,37 +30,16 @@ class LoRa:
     
     def __init__(self):
         self.a1 = 1
-        
-    """
-    Function for checking all available ports
-    """
-    def serial_allPorts(self):
-        if sys.platform.startswith('win'):
-            ports = ['COM' + str(i+1) for i in range(256)]
-        elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
-            ports = glob.glob('/dev/tty[A-Za-z]*')
-        elif sys.platform.startswith('darwin'):
-            ports = glob.glob('/dev/tty.*')
-        else:
-            raise EnvironmentError('Unsupported platform')
-        result = []
-        for port in ports:
-            try:
-                if port == 'dev/tty.Bluetooth-Incoming-Port':
-                    device = 1
-                else:
-                    device = serial.Serial(port)
-                    device.close()
-                    result.append(port)
-            except:
-                pass
-        return result
+    
     
     """
     Function for checking all available ports
     """
-    def new_serial_allPorts(self):        
+    def listPorts(self):        
         ports = serial.tools.list_ports.comports()
         
-        for port in ports:
-            print(port)
+        for index, port in enumerate(ports):
+            print("  " + str(index) + ". " + port.device)
+        print(str(len(ports)) + " ports found")
+        
+        return ports
