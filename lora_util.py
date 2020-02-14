@@ -25,6 +25,7 @@ class LoRa:
     waitCount = 99999
     segLen = 16
     lastData = []
+    serialPort = None
     
     
     def __init__(self):
@@ -70,14 +71,14 @@ class LoRa:
     """
     def findLoRa(self, ports):
         for port in ports:
-            ser = self.openPort(port.device)
+            self.serialPort = self.openPort(port.device)
             
             #change to __testiflora()
             data=self.GetLoRaID()
             print(data)
             if(len(data) > 1):
                 return port.deviceID
-            ser.close()
+            self.serialPort.close()
             
             
         raise OSError('No LoRa device found.')
@@ -97,8 +98,8 @@ class LoRa:
         self.serialWrite(packet_hdr)
         
         time.sleep(0.01)
-        bytesToRead = serial.inWaiting()
-        data = serial.read(bytesToRead)
+        bytesToRead = self.serialPort.inWaiting()
+        data = self.serialPort.read(bytesToRead)
         if self.debug == True:
             print(data.encode('hex'))
         tmp = 0
@@ -120,6 +121,6 @@ class LoRa:
     """
     def serialWrite(self, data):
         try:
-            serial.write(serial.to_bytes(data))
+            self.serialPort.write(serial.to_bytes(data))
         except OSError:
             pass
