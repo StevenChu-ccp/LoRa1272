@@ -62,8 +62,9 @@ class LoRa:
         try:
             port = serial.Serial(portPath, 115200, timeout=3)
             return port
-        except OSError:
-            pass
+        except serial.SerialException as ex:
+            raise OSError(ex)
+
 
     """
     Find LoRa device
@@ -77,7 +78,7 @@ class LoRa:
             data=self.GetLoRaID()
             print(data)
             if(len(data) > 1):
-                return port.deviceID
+                return port.device
             self.serialPort.close()
             
             
@@ -101,19 +102,19 @@ class LoRa:
         bytesToRead = self.serialPort.inWaiting()
         data = self.serialPort.read(bytesToRead)
         if self.debug == True:
-            print(data.encode('hex'))
-        tmp = 0
+            print(data.hex())
+        tmp = 0x00
         hex_digits = 0xffffff
         
         #not a good way to check byte
         if(len(data) > 5):
             # Transform the deviceID
             for i in range(5, len(data)-1):
-                tmp = tmp + ((int(data[i].encode('hex'), 16)) * hex_digits)
+                tmp = tmp + (data[i] * hex_digits)
                 hex_digits = hex_digits / 0xff
-            self.deviceID = tmp
-            self.firmwareVersion = int(data[4].encode('hex'), 16)
-        return data
+            self.deviceID = int(tmp)
+            self.firmwareVersion = data[4]  #(data[4].hex(), 16)
+        return data.hex()
     
     
     """
@@ -122,5 +123,5 @@ class LoRa:
     def serialWrite(self, data):
         try:
             self.serialPort.write(serial.to_bytes(data))
-        except OSError:
-            pass
+        except serial.SerialExecption as ex:
+            raise OSError(ex)

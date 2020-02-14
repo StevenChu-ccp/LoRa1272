@@ -12,14 +12,14 @@ lora = lora_util.LoRa()
 
 #correct port
 try:
-    port = ['dev/ttyACM0']
+    port = '/dev/ttyACM0'
     print('Port status: ', lora.openPort(port))
-except:
-    print('Failed to open port ttyACM0')
+except OSError as ex:
+    raise OSError(ex)
 
 #unexist port
 try:
-    port = ['dev/ttyACM1']
+    port = '/dev/ttyACM1'
     print('Port status: ', lora.openPort(port))
-except:
-    print('Failed to open port ttyACM1')
+except OSError as ex:
+    raise OSError(ex)
