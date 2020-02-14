@@ -15,11 +15,11 @@ try:
     port = ['dev/ttyACM0']
     print('Port status: ', lora.openPort(port))
 except:
-    print('Failed to open port')
+    print('Failed to open port ttyACM0')
 
 #unexist port
 try:
     port = ['dev/ttyACM1']
     print('Port status: ', lora.openPort(port))
 except:
-    print('Failed to open port')
+    print('Failed to open port ttyACM1')

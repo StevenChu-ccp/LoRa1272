@@ -94,7 +94,7 @@ class LoRa:
         if self.debug == True:
             print(packet_hdr)
         
-        self.Fun_ser_Write(packet_hdr)
+        self.serialWrite(packet_hdr)
         
         time.sleep(0.01)
         bytesToRead = serial.inWaiting()
