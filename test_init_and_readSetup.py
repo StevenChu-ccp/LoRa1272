@@ -18,4 +18,4 @@ print(lora.getLoRaID())
 print(lora.initLoRa())
 print(lora.readSetup())
 
-lora.serialClose()
+lora.closePort()

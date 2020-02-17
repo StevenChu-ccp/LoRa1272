@@ -18,7 +18,6 @@ import threading
 
 class LoRa:
     deviceID = 10
-    waitTillResponseTime = 5
     debug = True
     sleep = 0
     firmwareVersion = 0
@@ -29,7 +28,8 @@ class LoRa:
     
     
     def __init__(self):
-        self.a1 = 1
+        pass
+        
     
     """
     List all available ports
@@ -111,7 +111,7 @@ class LoRa:
                 tmp = tmp + (data[i] * hex_digits)
                 hex_digits = hex_digits / 0xff
             self.deviceID = int(tmp)
-            self.firmwareVersion = data[4]  #(data[4].hex(), 16)
+            self.firmwareVersion = data[4]
         return data.hex()
     
     
@@ -132,33 +132,22 @@ class LoRa:
         try:
             if self.debug == True:
                 print(data)
-            self.serialPort.write(serial.to_bytes(data))
+            self.serialWrite(data)
             time.sleep(0.04)
             bytesToRead = self.serialPort.inWaiting()
-            cnt = 0
-            while True:
-                readData = self.serialPort.read(bytesToRead)
-                cnt += 1
-                
-                #if sucess or time out, break
-                if len(data) > 0 or cnt > self.waitCount:
-                    break
+            readData = self.serialPort.read(bytesToRead)
             if self.debug == True:
                 print(readData.hex())
-        #except (OSError, serial.SerialException):
+            return readData
         except serial.SerialExecption as ex:
             raise OSError(ex)
-        return readData
     
     
     """
     Close serial port
     """
-    def serialClose(self):
-        try:
-            self.serialPort.close()
-        except serial.SerialException:
-            print("port already open")
+    def closePort(self):
+        self.serialPort.close()
             
     
     ##################################################

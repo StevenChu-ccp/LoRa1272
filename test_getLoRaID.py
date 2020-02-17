@@ -17,4 +17,4 @@ print(lora.getLoRaID())
 print(lora.deviceID)
 print(lora.firmwareVersion)
 
-lora.serialClose()
+lora.closePort()
