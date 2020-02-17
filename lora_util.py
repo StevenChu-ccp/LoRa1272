@@ -70,7 +70,7 @@ class LoRa:
     def serialWrite(self, data):
         try:
             self.serialPort.write(serial.to_bytes(data))
-        except serial.SerialExecption as ex:
+        except serial.SerialException as ex:
             raise OSError(ex)
             
 
@@ -114,7 +114,7 @@ class LoRa:
                 print(data)
             self.serialWrite(data)
             time.sleep(0.01)
-            bytesToRead = self.serialPort.in_waiting()
+            bytesToRead = self.serialPort.inWaiting()
             readData = self.serialPort.read(bytesToRead)
             if self.debug == True:
                 print(readData.hex())
