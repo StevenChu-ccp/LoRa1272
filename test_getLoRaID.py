@@ -14,5 +14,7 @@ lora_path = lora.findLoRa(ports)
 lora.openPort(lora_path)
 
 print(lora.getLoRaID())
+print(lora.deviceID)
+print(lora.firmwareVersion)
 
 lora.serialClose()

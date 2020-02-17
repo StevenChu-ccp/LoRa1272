@@ -174,20 +174,20 @@ class LoRa:
     
     def readSetup(self):
         package_hdr = [0xc1,0x02,0x00,0]
-        package_hdr[3] = self.Fun_CRC(package_hdr)
-        data = self.FunLora_ChipSendByte(package_hdr)
+        package_hdr[3] = self.__calCRC(package_hdr)
+        data = self.sendByteToChip(package_hdr)
         return data
     
     
     def RX(self):
        array1 = [0xC1,3,5,3,1,0x65,0x6C,0x0f,0]
-       array1[8] = self.Fun_CRC(array1)
-       data=self.FunLora_ChipSendByte(array1)
+       array1[8] = self.__calCRC(array1)
+       data=self.sendByteToChip(array1)
        return data
 
     # 設定寫入和頻段
     def TX(self):
        array1 = [0xC1,3,5,2,1,0x65,0x6C,0x0f,0]
-       array1[8] = self.Fun_CRC(array1)
-       data = self.FunLora_ChipSendByte(array1)
+       array1[8] = self.__calCRC(array1)
+       data = self.sendByteToChip(array1)
        return data
