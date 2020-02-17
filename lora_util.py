@@ -44,16 +44,7 @@ class LoRa:
         
         return ports
     
-    """
-    Calculate CRC by applying XOR to every bytes
-    return: Hex value
-    """
-    def __calCRC(self, data):
-        crc = 0
-        for i in data:
-            crc = crc^i
-        return crc
-
+    
     """
     Open target port
     return: [serial] object
@@ -64,6 +55,34 @@ class LoRa:
             return port
         except serial.SerialException as ex:
             raise OSError(ex)
+            
+    
+    """
+    Close serial port
+    """
+    def closePort(self):
+        self.serialPort.close()
+        
+    
+    """
+    Write data to serial
+    """
+    def serialWrite(self, data):
+        try:
+            self.serialPort.write(serial.to_bytes(data))
+        except serial.SerialExecption as ex:
+            raise OSError(ex)
+            
+
+    """
+    Calculate CRC by applying XOR to every bytes
+    return: Hex value
+    """
+    def __calCRC(self, data):
+        crc = 0
+        for i in data:
+            crc = crc^i
+        return crc
 
 
     """
@@ -87,6 +106,24 @@ class LoRa:
         
     
     """
+    Communicate with LoRa
+    """
+    def sendByteToChip(self, data):
+        try:
+            if self.debug == True:
+                print(data)
+            self.serialWrite(data)
+            time.sleep(0.01)
+            bytesToRead = self.serialPort.in_waiting()
+            readData = self.serialPort.read(bytesToRead)
+            if self.debug == True:
+                print(readData.hex())
+            return readData
+        except serial.SerialExecption as ex:
+            raise OSError(ex)
+            
+            
+    """
     Get the details of the device
     return: Hex data
     """
@@ -95,12 +132,17 @@ class LoRa:
         packet_hdr[3] = self.__calCRC(packet_hdr)
         if self.debug == True:
             print(packet_hdr)
+        data = self.sendByteToChip(packet_hdr)
+        
+        """
         self.serialWrite(packet_hdr)
         time.sleep(0.01)
         bytesToRead = self.serialPort.inWaiting()
         data = self.serialPort.read(bytesToRead)
         if self.debug == True:
             print(data.hex())
+        """  
+        
         tmp = 0x00
         hex_digits = 0xffffff
         
@@ -114,41 +156,6 @@ class LoRa:
             self.firmwareVersion = data[4]
         return data.hex()
     
-    
-    """
-    Write data to serial
-    """
-    def serialWrite(self, data):
-        try:
-            self.serialPort.write(serial.to_bytes(data))
-        except serial.SerialExecption as ex:
-            raise OSError(ex)
-            
-    
-    """
-    Communicate with LoRa
-    """
-    def sendByteToChip(self, data):
-        try:
-            if self.debug == True:
-                print(data)
-            self.serialWrite(data)
-            time.sleep(0.04)
-            bytesToRead = self.serialPort.inWaiting()
-            readData = self.serialPort.read(bytesToRead)
-            if self.debug == True:
-                print(readData.hex())
-            return readData
-        except serial.SerialExecption as ex:
-            raise OSError(ex)
-    
-    
-    """
-    Close serial port
-    """
-    def closePort(self):
-        self.serialPort.close()
-            
     
     ##################################################
     #Application
@@ -174,7 +181,7 @@ class LoRa:
        data=self.sendByteToChip(array1)
        return data
 
-    # 設定寫入和頻段
+
     def TX(self):
        array1 = [0xC1,3,5,2,1,0x65,0x6C,0x0f,0]
        array1[8] = self.__calCRC(array1)
